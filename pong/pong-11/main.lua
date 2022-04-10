@@ -313,7 +313,8 @@ end
 function displayFPS()
     -- simple FPS display across all states
     love.graphics.setFont(smallFont)
-    love.graphics.setColor(0, 255, 0, 255)
+        -- In versions prior to 11.0, color component values were within the range of 0 to 255 instead of 0 to 1.
+    love.graphics.setColor(0, 1, 0, 1)
     love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), 10, 10)
 end
 
