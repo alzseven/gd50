@@ -18,7 +18,7 @@ function PipePair:init(y)
     self.scored = false
 
     -- initialize pipes past the end of the screen
-    self.x = VIRTUAL_WIDTH + 32
+    self.x = VIRTUAL_WIDTH + 32 + math.random(-8, 8)
 
     -- y value is for the topmost pipe; gap is a vertical shift of the second lower pipe
     self.y = y
