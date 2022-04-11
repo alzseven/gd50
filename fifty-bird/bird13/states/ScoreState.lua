@@ -16,7 +16,8 @@ ScoreState = Class{__includes = BaseState}
 ]]
 function ScoreState:enter(params)
     self.score = params.score
-    
+
+    -- https://opengameart.org/content/medals-3
     if self.score > 20 then
         self.medalimage = love.graphics.newImage('goldmedal.png')
     elseif self.score > 10 then
