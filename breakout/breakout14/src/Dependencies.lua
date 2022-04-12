@@ -22,6 +22,7 @@ require 'src/Ball'
 require 'src/Brick'
 
 require 'src/PowerUp'
+require 'src/BrickKey'
 
 -- a class used to generate our brick layouts (levels)
 require 'src/LevelMaker'

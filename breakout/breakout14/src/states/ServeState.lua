@@ -21,6 +21,7 @@ function ServeState:enter(params)
     self.paddle = params.paddle
     self.bricks = params.bricks
     self.powerUps = params.powerUps
+    self.brickkey = params.brickkey
     self.health = params.health
     self.score = params.score
     self.highScores = params.highScores
@@ -45,6 +46,7 @@ function ServeState:update(dt)
             paddle = self.paddle,
             bricks = self.bricks,
             powerUps = self.powerUps,
+            brickkey = self.brickkey,
             health = self.health,
             score = self.score,
             highScores = self.highScores,
@@ -64,6 +66,8 @@ function ServeState:render()
 
     -- Only one ball on ServeState
     self.balls[1]:render()
+
+    self.brickkey:render()
 
     for k, powerUp in pairs(self.powerUps) do
         powerUp:render()

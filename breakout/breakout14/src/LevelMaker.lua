@@ -123,6 +123,8 @@ function LevelMaker.createMap(level)
     if #bricks == 0 then
         return self.createMap(level)
     else
+        -- Only one locked brick, selected by random
+        bricks[math.random(1,#bricks)].isLocked = true
         return bricks
     end
 end
@@ -137,4 +139,8 @@ function LevelMaker.createPowerUps()
     table.insert(powerUps, PowerUp(VIRTUAL_WIDTH / 2 - 8, VIRTUAL_HEIGHT / 2))
 
     return powerUps
+end
+
+function LevelMaker.createBrickKey()
+    return BrickKey(math.random(VIRTUAL_WIDTH * 0.3 - 8, VIRTUAL_WIDTH * 0.6 - 8), VIRTUAL_HEIGHT / 2)
 end

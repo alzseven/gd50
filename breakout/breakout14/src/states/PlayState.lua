@@ -24,6 +24,7 @@ function PlayState:enter(params)
     self.paddle = params.paddle
     self.bricks = params.bricks
     self.powerUps = params.powerUps
+    self.brickkey = params.brickkey
     self.health = params.health
     self.score = params.score
     self.highScores = params.highScores
@@ -87,8 +88,10 @@ function PlayState:update(dt)
             -- only check collision if we're in play
             if brick.inPlay and ball:collides(brick) then
 
-                -- add to score
-                self.score = self.score + (brick.tier * 200 + brick.color * 25)
+                if not brick.isLocked then
+                    -- add to score
+                    self.score = self.score + (brick.tier * 200 + brick.color * 25)
+                end
 
                 -- trigger the brick's hit function, which removes it from play
                 brick:hit()
@@ -98,8 +101,10 @@ function PlayState:update(dt)
                     -- can't go above 3 health
                     self.health = math.min(3, self.health + 1)
 
-                    self.paddle.size = math.max(1, self.paddle.size - 1)
-                    self.paddle.width = self.paddle.width / 2
+                    if self.paddle.size ~= 1 then
+                        self.paddle.width = self.paddle.width / self.paddle.size * (self.paddle.size-1)
+                        self.paddle.size = self.paddle.size - 1
+                    end
 
                     -- multiply recover points by 2
                     self.recoverPoints = math.min(100000, self.recoverPoints * 2)
@@ -174,6 +179,18 @@ function PlayState:update(dt)
         end
     end
 
+    --TODO:Need Refactoring
+    for k, ball in pairs(self.balls) do
+        if ball:collides(self.brickkey) then
+            for k,brick in pairs(self.bricks) do
+                if brick.isLocked then
+                    brick.isLocked = false
+                    self.brickkey.inPlay = false
+                end
+            end
+        end
+    end
+    
     for k, powerUp in pairs(self.powerUps) do
 
         for k, ball in pairs(self.balls) do
@@ -219,8 +236,10 @@ function PlayState:update(dt)
         self.health = self.health - 1
         gSounds['hurt']:play()
 
-        self.paddle.size = math.min(3, self.paddle.size + 1)
-        self.paddle.width = self.paddle.width * 2
+        if self.paddle.size ~= 4 then
+            self.paddle.width = self.paddle.width / self.paddle.size * (self.paddle.size+1)
+            self.paddle.size = self.paddle.size + 1
+        end
 
         if self.health == 0 then
             gStateMachine:change('game-over', {
@@ -232,6 +251,7 @@ function PlayState:update(dt)
                 paddle = self.paddle,
                 bricks = self.bricks,
                 powerUps = self.powerUps,
+                brickkey = self.brickkey,
                 health = self.health,
                 score = self.score,
                 highScores = self.highScores,
@@ -261,6 +281,8 @@ function PlayState:render()
     for k, powerUp in pairs(self.powerUps) do
         powerUp:render()
     end
+
+    self.brickkey:render()
 
     -- render all particle systems
     for k, brick in pairs(self.bricks) do
