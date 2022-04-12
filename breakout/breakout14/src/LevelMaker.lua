@@ -126,3 +126,15 @@ function LevelMaker.createMap(level)
         return bricks
     end
 end
+
+--[[
+    Creates PowerUps - 
+    Only one for this case - in the middle of screen.
+]]
+function LevelMaker.createPowerUps()
+    local powerUps = {}
+
+    table.insert(powerUps, PowerUp(VIRTUAL_WIDTH / 2 - 8, VIRTUAL_HEIGHT / 2))
+
+    return powerUps
+end
