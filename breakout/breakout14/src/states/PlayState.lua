@@ -180,6 +180,10 @@ function PlayState:update(dt)
                 -- create new balls
                 for x=1, POWERUP_NEW_BALL_COUNT do
                     powerupball = Ball()
+                    --[[ Set powerupball position to middle of screen.
+                        If powerup's position is somewhere else,
+                         then need of extra implementation for move balls to powerup's position 
+                    ]]
                     powerupball:reset()
                     powerupball.skin = math.random(7)
                     powerupball.dx = math.random(-200, 200)
