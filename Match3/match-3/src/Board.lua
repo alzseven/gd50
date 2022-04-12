@@ -30,12 +30,14 @@ function Board:initializeTiles()
         table.insert(self.tiles, {})
 
         for tileX = 1, 8 do
+            
             -- create a new tile at X,Y with a random color and variety
             table.insert(self.tiles[tileY], Tile(tileX, tileY, math.random(18), math.random(6)))
         end
     end
 
     while self:calculateMatches() do
+        
         -- recursively initialize if matches were returned so we always have
         -- a matchless board on start
         self:initializeTiles()
@@ -61,10 +63,12 @@ function Board:calculateMatches()
         
         -- every horizontal tile
         for x = 2, 8 do
+            
             -- if this is the same color as the one we're trying to match...
             if self.tiles[y][x].color == colorToMatch then
                 matchNum = matchNum + 1
             else
+                
                 -- set this as the new color we want to watch for
                 colorToMatch = self.tiles[y][x].color
 
@@ -74,6 +78,7 @@ function Board:calculateMatches()
 
                     -- go backwards from here by matchNum
                     for x2 = x - 1, x - matchNum, -1 do
+                        
                         -- add each tile to the match that's in that match
                         table.insert(match, self.tiles[y][x2])
                     end
@@ -82,12 +87,12 @@ function Board:calculateMatches()
                     table.insert(matches, match)
                 end
 
+                matchNum = 1
+
                 -- don't need to check last two if they won't be in a match
                 if x >= 7 then
                     break
                 end
-
-                matchNum = 1
             end
         end
 
@@ -141,7 +146,7 @@ function Board:calculateMatches()
             local match = {}
             
             -- go backwards from end of last row by matchNum
-            for y = 8, 8 - matchNum, -1 do
+            for y = 8, 8 - matchNum + 1, -1 do
                 table.insert(match, self.tiles[y][x])
             end
 
@@ -185,12 +190,15 @@ function Board:getFallingTiles()
 
         local y = 8
         while y >= 1 do
+            
             -- if our last tile was a space...
             local tile = self.tiles[y][x]
             
             if space then
+                
                 -- if the current tile is *not* a space, bring this down to the lowest space
                 if tile then
+                    
                     -- put the tile in the correct spot in the board and fix its grid positions
                     self.tiles[spaceY][x] = tile
                     tile.gridY = spaceY
@@ -203,14 +211,17 @@ function Board:getFallingTiles()
                         y = (tile.gridY - 1) * 32
                     }
 
-                    -- set space back to 0, set Y to spaceY so we start back from here again
+                    -- set Y to spaceY so we start back from here again
                     space = false
                     y = spaceY
+
+                    -- set this back to 0 so we know we don't have an active space
                     spaceY = 0
                 end
             elseif tile == nil then
                 space = true
                 
+                -- if we haven't assigned a space yet, set this to it
                 if spaceY == 0 then
                     spaceY = y
                 end
@@ -227,10 +238,13 @@ function Board:getFallingTiles()
 
             -- if the tile is nil, we need to add a new one
             if not tile then
+
+                -- new tile with random color and variety
                 local tile = Tile(x, y, math.random(18), math.random(6))
                 tile.y = -32
                 self.tiles[y][x] = tile
 
+                -- create a new tween to return for this tile to fall down
                 tweens[tile] = {
                     y = (tile.gridY - 1) * 32
                 }
@@ -239,10 +253,6 @@ function Board:getFallingTiles()
     end
 
     return tweens
-end
-
-function Board:getNewTiles()
-    return {}
 end
 
 function Board:render()
