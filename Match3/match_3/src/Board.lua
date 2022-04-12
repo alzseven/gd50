@@ -34,7 +34,12 @@ function Board:initializeTiles(level)
         for tileX = 1, 8 do
             
             -- create a new tile at X,Y with a random color and variety
-            table.insert(self.tiles[tileY], Tile(tileX, tileY, math.random(18), math.random(math.min(self.level,6))))
+            local tile = Tile(tileX, tileY, math.random(18), math.random(math.min(self.level,6)))
+            if math.random(20) == 1 then
+                tile.isShining = true
+                tile:setTween()
+            end
+            table.insert(self.tiles[tileY], tile)
         end
     end
 
@@ -80,9 +85,14 @@ function Board:calculateMatches()
 
                     -- go backwards from here by matchNum
                     for x2 = x - 1, x - matchNum, -1 do
-                        
-                        -- add each tile to the match that's in that match
-                        table.insert(match, self.tiles[y][x2])
+                        if self.tiles[y][x2].isShining then
+                            for i = 1, 8 do
+                                table.insert(match, self.tiles[i][x2])
+                            end
+                        else
+                            -- add each tile to the match that's in that match
+                            table.insert(match, self.tiles[y][x2])
+                        end
                     end
 
                     -- add this match to our total matches table
@@ -104,13 +114,20 @@ function Board:calculateMatches()
             
             -- go backwards from end of last row by matchNum
             for x = 8, 8 - matchNum + 1, -1 do
-                table.insert(match, self.tiles[y][x])
+                if self.tiles[y][x].isShining then
+                    for i = 1, 8 do
+                        table.insert(match, self.tiles[i][x])
+                    end
+                else
+                    table.insert(match, self.tiles[y][x])
+                end
             end
 
             table.insert(matches, match)
         end
     end
 
+    -- TODO: Need Refactoring...
     -- vertical matches
     for x = 1, 8 do
         local colorToMatch = self.tiles[1][x].color
@@ -127,8 +144,21 @@ function Board:calculateMatches()
                 if matchNum >= 3 then
                     local match = {}
 
+                    local isShiningExists = false
                     for y2 = y - 1, y - matchNum, -1 do
-                        table.insert(match, self.tiles[y2][x])
+                        if self.tiles[y2][x].isShining then
+                            isShiningExists = true
+                        end
+                    end
+                    
+                    if isShiningExists then
+                        for i = 1, 8 do
+                            table.insert(match, self.tiles[i][x])
+                        end
+                    else
+                        for y2 = y - 1, y - matchNum, -1 do
+                            table.insert(match, self.tiles[y2][x])
+                        end
                     end
 
                     table.insert(matches, match)
@@ -147,11 +177,23 @@ function Board:calculateMatches()
         if matchNum >= 3 then
             local match = {}
             
-            -- go backwards from end of last row by matchNum
+            local isShiningExists = false
             for y = 8, 8 - matchNum + 1, -1 do
-                table.insert(match, self.tiles[y][x])
+                if self.tiles[y][x].isShining then
+                    isShiningExists = true
+                end
             end
-
+            
+            if isShiningExists then
+                for i = 1, 8 do
+                    table.insert(match, self.tiles[i][x])
+                end
+            else
+                -- go backwards from end of last row by matchNum
+                for y = 8, 8 - matchNum + 1, -1 do
+                    table.insert(match, self.tiles[y][x])
+                end
+            end
             table.insert(matches, match)
         end
     end
@@ -246,6 +288,11 @@ function Board:getFallingTiles()
                 tile.y = -32
                 self.tiles[y][x] = tile
 
+                if math.random(20) == 1 then
+                    tile.isShining = true
+                    tile:setTween()
+                end
+                
                 -- create a new tween to return for this tile to fall down
                 tweens[tile] = {
                     y = (tile.gridY - 1) * 32

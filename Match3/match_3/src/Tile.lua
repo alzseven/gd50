@@ -26,6 +26,17 @@ function Tile:init(x, y, color, variety)
     -- tile appearance/points
     self.color = color
     self.variety = variety
+
+    self.isShining = false
+    -- timer used to switch the highlight rect's color
+    self.rectHighlighted = false
+end
+
+function Tile:setTween()
+    -- set our Timer class to turn cursor highlight on and off
+    Timer.every(1, function()
+        self.rectHighlighted = not self.rectHighlighted
+    end)
 end
 
 function Tile:render(x, y)
@@ -39,4 +50,22 @@ function Tile:render(x, y)
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.draw(gTextures['main'], gFrames['tiles'][self.color][self.variety],
         self.x + x, self.y + y)
+
+    if self.isShining then
+        -- multiply so drawing white rect makes it brighter
+        love.graphics.setBlendMode('add')
+
+        -- render highlight rect color based on timer
+        if self.rectHighlighted then
+            love.graphics.setColor(1, 1, 1, 96/255)
+        else
+            love.graphics.setColor(1, 1, 1, 16/255)
+        end
+
+        love.graphics.rectangle('fill', (self.gridX - 1) * 32 + (VIRTUAL_WIDTH - 272),
+            (self.gridY - 1) * 32 + 16, 32, 32, 4)
+
+        -- back to alpha
+        love.graphics.setBlendMode('alpha')
+    end
 end
