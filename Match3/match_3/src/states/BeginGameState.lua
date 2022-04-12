@@ -31,6 +31,7 @@ function BeginGameState:enter(def)
     -- grab level # from the def we're passed
     self.level = def.level
 
+    self.board:initializeTiles(self.level)
     --
     -- animate our white screen fade-in, then animate a drop-down with
     -- the level text
