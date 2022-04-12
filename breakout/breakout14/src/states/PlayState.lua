@@ -98,6 +98,9 @@ function PlayState:update(dt)
                     -- can't go above 3 health
                     self.health = math.min(3, self.health + 1)
 
+                    self.paddle.size = math.max(1, self.paddle.size - 1)
+                    self.paddle.width = self.paddle.width / 2
+
                     -- multiply recover points by 2
                     self.recoverPoints = math.min(100000, self.recoverPoints * 2)
 
@@ -215,6 +218,9 @@ function PlayState:update(dt)
     if #self.balls == 0 then
         self.health = self.health - 1
         gSounds['hurt']:play()
+
+        self.paddle.size = math.min(3, self.paddle.size + 1)
+        self.paddle.width = self.paddle.width * 2
 
         if self.health == 0 then
             gStateMachine:change('game-over', {
