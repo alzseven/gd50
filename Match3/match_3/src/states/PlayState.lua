@@ -123,8 +123,29 @@ function PlayState:update(dt)
             gSounds['select']:play()
         end
 
+        if love.mouse.isDown(1) then
+            -- get virtual coordinates
+            local mouseX, mouseY = push:toGame(love.mouse.getX(), love.mouse.getY())
+            -- tweak mouse coordinates into a board grid position
+            mouseXBoard = math.floor((mouseX - self.board.x)/32 + 1)
+            mouseYBoard = math.floor((mouseY - self.board.y)/32 + 1)
+
+            -- if the mouse is pointing in the board, highlight that tile
+            if mouseXBoard >= 1 and mouseXBoard <= 8 and mouseYBoard >= 1 and mouseYBoard <= 8 then
+                self.lastHighlightX = self.boardHighlightX
+                self.lastHighlightY = self.boardHighlightY
+                self.boardHighlightX = mouseXBoard - 1
+                self.boardHighlightY = mouseYBoard - 1
+            end
+        else
+            self.lastHighlightX = -1
+            self.lastHighlightY = -1
+        end
+
         -- if we've pressed enter, to select or deselect a tile...
-        if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
+        if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') 
+            or (self.lastHighlightX == self.boardHighlightX
+            and self.lastHighlightY == self.boardHighlightY) then
             
             -- if same tile as currently highlighted, deselect
             local x = self.boardHighlightX + 1
