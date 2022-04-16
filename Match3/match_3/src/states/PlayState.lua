@@ -27,6 +27,8 @@ function PlayState:init()
     self.boardHighlightX = 0
     self.boardHighlightY = 0
 
+    self.lastSwappedTiles = {}
+
     -- timer used to switch the highlight rect's color
     self.rectHighlighted = false
 
@@ -142,7 +144,7 @@ function PlayState:update(dt)
                 gSounds['error']:play()
                 self.highlightedTile = nil
             else
-                
+
                 -- swap grid positions of tiles
                 local tempX = self.highlightedTile.gridX
                 local tempY = self.highlightedTile.gridY
@@ -160,6 +162,10 @@ function PlayState:update(dt)
 
                 self.board.tiles[newTile.gridY][newTile.gridX] = newTile
 
+                table.insert(self.lastSwappedTiles, self.highlightedTile)
+                
+                table.insert(self.lastSwappedTiles, newTile)
+
                 -- tween coordinates between the two so they swap
                 Timer.tween(0.1, {
                     [self.highlightedTile] = {x = newTile.x, y = newTile.y},
@@ -169,6 +175,9 @@ function PlayState:update(dt)
                 -- once the swap is finished, we can tween falling blocks as needed
                 :finish(function()
                     self:calculateMatches()
+                    if not self.board:checkAnyMatches() then
+                        self.board:initializeTiles(self.board.level)
+                    end
                 end)
             end
         end
@@ -216,11 +225,27 @@ function PlayState:calculateMatches()
             -- as a result of falling blocks once new blocks have finished falling
             self:calculateMatches()
         end)
+
+        self.lastSwappedTiles = {}
     
     -- if no matches, we can continue playing
     else
+        if #self.lastSwappedTiles > 0 then
+            local x1, y1, x2, y2 = self.lastSwappedTiles[1].gridX, self.lastSwappedTiles[1].gridY,
+                self.lastSwappedTiles[2].gridX, self.lastSwappedTiles[2].gridY
+            self.board:swapTiles(x1, y1, x2, y2)
+
+            -- tween coordinates between the two so they swap
+            Timer.tween(0.1, {
+                [self.board.tiles[y1][x1]] = {x = self.board.tiles[y2][x2].x, y = self.board.tiles[y2][x2].y},
+                [self.board.tiles[y2][x2]] = {x = self.board.tiles[y1][x1].x, y = self.board.tiles[y1][x1].y}
+            })
+        end
+        
         self.canInput = true
     end
+
+    self.lastSwappedTiles = {}
 end
 
 function PlayState:render()

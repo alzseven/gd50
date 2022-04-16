@@ -43,7 +43,7 @@ function Board:initializeTiles(level)
         end
     end
 
-    while self:calculateMatches() do
+    while self:calculateMatches() or not self:checkAnyMatches() do
         
         -- recursively initialize if matches were returned so we always have
         -- a matchless board on start
@@ -302,6 +302,51 @@ function Board:getFallingTiles()
     end
 
     return tweens
+end
+
+function Board:checkAnyMatches()
+    for y = 1, 8 do
+        for x = 1, 7 do
+            self:swapTiles(x, y, x+1, y)
+            if(self:calculateMatches()) then
+                self:swapTiles(x, y, x+1, y)
+                return true
+            else
+                self:swapTiles(x, y, x+1, y)
+            end
+        end
+    end
+    for x = 1, 8 do
+        for y = 1, 7 do
+            self:swapTiles(x,y,x,y+1)
+            if(self:calculateMatches()) then
+                self:swapTiles(x,y,x,y+1)
+                return true
+            else
+                self:swapTiles(x,y,x,y+1)
+            end
+        end
+    end
+    return false
+end
+
+function Board:swapTiles(x1,y1,x2,y2)
+    -- swap grid positions of tiles
+    local tempX = self.tiles[y1][x1].gridX
+    local tempY = self.tiles[y1][x1].gridY
+
+    local newTile = self.tiles[y2][x2]
+
+    self.tiles[y1][x1].gridX = newTile.gridX
+    self.tiles[y1][x1].gridY = newTile.gridY
+    newTile.gridX = tempX
+    newTile.gridY = tempY
+
+    -- swap tiles in the tiles table
+    self.tiles[self.tiles[y1][x1].gridY][self.tiles[y1][x1].gridX] =
+        self.tiles[y1][x1]
+
+    self.tiles[newTile.gridY][newTile.gridX] = newTile
 end
 
 function Board:render()
