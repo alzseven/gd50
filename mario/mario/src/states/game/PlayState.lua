@@ -46,6 +46,7 @@ function PlayState:update(dt)
     -- update player and level
     self.player:update(dt)
     self.level:update(dt)
+    self:updateCamera()
 
     -- constrain player X no matter which state
     if self.player.x <= 0 then
@@ -53,8 +54,6 @@ function PlayState:update(dt)
     elseif self.player.x > TILE_SIZE * self.tileMap.width - self.player.width then
         self.player.x = TILE_SIZE * self.tileMap.width - self.player.width
     end
-
-    self:updateCamera()
 end
 
 function PlayState:render()
@@ -76,9 +75,9 @@ function PlayState:render()
     
     -- render score
     love.graphics.setFont(gFonts['medium'])
-    love.graphics.setColor(0, 0, 0, 255)
+    love.graphics.setColor(0, 0, 0, 1)
     love.graphics.print(tostring(self.player.score), 5, 5)
-    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.setColor(1, 1, 1, 1)
     love.graphics.print(tostring(self.player.score), 4, 4)
 end
 
