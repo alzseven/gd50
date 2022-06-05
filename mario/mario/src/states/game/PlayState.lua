@@ -16,10 +16,21 @@ function PlayState:init()
     self.backgroundX = 0
 
     self.gravityOn = true
-    self.gravityAmount = 6
+    self.gravityAmount = 4
+
+    local columnWithGround = 1
+    local ground = false
+    local x = 1
+    while not ground do
+        if self.tileMap.tiles[7][x].id == TILE_ID_GROUND then
+            ground = true
+            columnWithGround = x
+        end
+        x = x + 1
+    end
 
     self.player = Player({
-        x = 0, y = 0,
+        x = (columnWithGround - 1) * TILE_SIZE, y = 0,
         width = 16, height = 20,
         texture = 'green-alien',
         stateMachine = StateMachine {

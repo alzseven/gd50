@@ -74,6 +74,10 @@ BUSH_IDS = {
     1, 2, 5, 6, 7
 }
 
+FLAGPOLE_ID = {
+    1, 2, 3, 4, 5, 6
+}
+
 COIN_IDS = {
     1, 2, 3
 }
@@ -84,6 +88,10 @@ CRATES = {
 
 GEMS = {
     1, 2, 3, 4, 5, 6, 7, 8
+}
+
+KEYS = {
+    1, 2, 3, 4
 }
 
 JUMP_BLOCKS = {}
