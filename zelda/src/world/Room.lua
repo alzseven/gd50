@@ -158,6 +158,26 @@ function Room:update(dt)
 
         -- remove entity from the table if health is <= 0
         if entity.health <= 0 then
+            if not entity.dead then
+                if math.random(1,10) < 3 then
+                    local extraHeart = GameObject(
+                        GAME_OBJECT_DEFS['heart'],
+                        entity.x,
+                        entity.y
+                    )
+    
+                    -- define a function for the switch that will open all doors in the room
+                    extraHeart.onCollide = function()
+                        if extraHeart.state == 'valid' then
+                            extraHeart.state = 'invalid'
+                            self.player.health = math.min(self.player.health + 2, 6)
+                        end
+                    end
+    
+                    -- add to list of objects in scene (only one switch for now)
+                    table.insert(self.objects, extraHeart)
+                end
+            end
             entity.dead = true
         elseif not entity.dead then
             entity:processAI({room = self}, dt)

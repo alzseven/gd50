@@ -24,6 +24,23 @@ GAME_OBJECT_DEFS = {
             }
         }
     },
+    ['heart'] = {
+        type = 'heart',
+        texture = 'hearts',
+        frame = 2,
+        width = 16,
+        height = 16,
+        solid = false,
+        defaultState = 'valid',
+        states = {
+            ['valid'] = {
+                frame = 5
+            },
+            ['invalid'] = {
+                frame = 1
+            }
+        }
+    },
     ['pot'] = {
         -- TODO
     }
