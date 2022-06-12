@@ -19,9 +19,6 @@ function AlienLaunchMarker:init(world)
     self.shiftedX = self.baseX
     self.shiftedY = self.baseY
 
-    -- rotation for the trajectory arrow
-    self.rotation = 0
-
     -- whether our arrow is showing where we're aiming
     self.aiming = false
 
@@ -63,7 +60,7 @@ function AlienLaunchMarker:update(dt)
 
         -- re-render trajectory
         elseif self.aiming then
-            self.rotation = self.baseY - self.shiftedY * 0.9
+            
             self.shiftedX = math.min(self.baseX + 30, math.max(x, self.baseX - 30))
             self.shiftedY = math.min(self.baseY + 30, math.max(y, self.baseY - 30))
         end
@@ -83,7 +80,7 @@ function AlienLaunchMarker:render()
             local impulseX = (self.baseX - self.shiftedX) * 10
             local impulseY = (self.baseY - self.shiftedY) * 10
 
-            -- draw 6 circles simulating trajectory of estimated impulse
+            -- draw 18 circles simulating trajectory of estimated impulse
             local trajX, trajY = self.shiftedX, self.shiftedY
             local gravX, gravY = self.world:getGravity()
 
@@ -91,7 +88,7 @@ function AlienLaunchMarker:render()
             for i = 1, 90 do
                 
                 -- magenta color that starts off slightly transparent
-                love.graphics.setColor(255, 80, 255, (255 / 12) * i)
+                love.graphics.setColor(255/255, 80/255, 255/255, ((255 / 24) * i) / 255)
                 
                 -- trajectory X and Y for this iteration of the simulation
                 trajX = self.shiftedX + i * 1/60 * impulseX
@@ -104,7 +101,7 @@ function AlienLaunchMarker:render()
             end
         end
         
-        love.graphics.setColor(255, 255, 255, 255)
+        love.graphics.setColor(1, 1, 1, 1)
     else
         self.alien:render()
     end
