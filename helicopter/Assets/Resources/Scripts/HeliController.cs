@@ -67,6 +67,9 @@ public class HeliController : MonoBehaviour {
 		// set explosion position to helicopter's and emit
 		explosion.transform.position = transform.position;
 		explosion.Play();
+
+		// reset skyscraperspawner speed
+		SkyscraperSpawner.speed = 10f;
 		
 		Destroy(gameObject);
 	}
