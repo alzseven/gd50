@@ -7,6 +7,7 @@ public class LevelGenerator : MonoBehaviour {
 	public GameObject floorPrefab;
 	public GameObject wallPrefab;
 	public GameObject ceilingPrefab;
+	public GameObject gapPrefab;
 
 	public GameObject characterController;
 
@@ -58,7 +59,14 @@ public class LevelGenerator : MonoBehaviour {
 				}
 
 				// create floor and ceiling
-				CreateChildPrefab(floorPrefab, floorParent, x, 0, z);
+				if (UnityEngine.Random.value * 10 > 1)
+				{
+					CreateChildPrefab(floorPrefab, floorParent, x, 0, z);
+				}
+				else
+				{
+					CreateChildPrefab(gapPrefab, floorParent, x, -2, z);
+				}
 
 				if (generateRoof) {
 					CreateChildPrefab(ceilingPrefab, wallsParent, x, 4, z);
